@@ -1,0 +1,10 @@
+__pycache__/
+*.pyc
+*.pyo
+data/pmu_fault_data.csv
+data/pmu_real_data.csv
+data/processed/
+data/processed_real/
+models/saved/
+models/saved_real/
+*.npy
