@@ -3,36 +3,25 @@
 A three-stage deep learning pipeline for fault detection, classification, and explainability
 using real Phasor Measurement Unit (PMU) data from a transmission line simulation.
 
----
-
-## Results Summary
-
-| Dataset        | Accuracy |
-|----------------|----------|
-| Synthetic data | 100.00%  |
-| Real PMU data  | 99.96%   |
-
----
-
 ## Project Overview
 
 Power grids are monitored using Phasor Measurement Units (PMUs), which capture
 synchronized high-frequency measurements of voltage, current, and frequency across
-the grid. When faults occur — such as line-to-ground faults, three-phase faults, or
-double line-to-ground faults — these measurements exhibit distinctive temporal
+the grid. When faults occur , such as line-to-ground faults, three-phase faults, or
+double line-to-ground faults ,  these measurements exhibit distinctive temporal
 signatures that traditional protection systems are slow to interpret.
 
 This project builds a three-stage AI pipeline:
 
-**Stage 1 — Fault Detection**
+**Stage 1 - Fault Detection**
 A binary view of the classifier output that distinguishes normal grid operation
 from any fault condition in real time.
 
-**Stage 2 — Fault Classification**
+**Stage 2 - Fault Classification**
 A Transformer-based multi-class model that identifies the specific fault type
 from a sliding window of PMU measurements.
 
-**Stage 3 — Explainability**
+**Stage 3 - Explainability**
 SHAP analysis that identifies which PMU channels contributed most to each
 classification decision, providing interpretable outputs for grid operators.
 
@@ -53,10 +42,10 @@ classification decision, providing interpretable outputs for grid operators.
 
 ## Dataset
 
-**Real dataset:** PMU Transmission Line Fault Dataset  
+**Real dataset:** PMU Transmission Line Fault Dataset
 Published by researchers from North South University, Virginia Tech,
-and the University of British Columbia.  
-Source: [Zenodo DOI 10.5281/zenodo.8214226](https://zenodo.org/records/8214226)  
+and the University of British Columbia.
+Source: [Zenodo DOI 10.5281/zenodo.8214226](https://zenodo.org/records/8214226)
 Format: 134,406 samples × 13 PMU channels, 6 fault types, perfectly balanced.
 
 **Synthetic dataset:** Generated using realistic per-class voltage and current
@@ -65,8 +54,8 @@ signatures for initial model development and comparison.
 ---
 
 ## Model Architecture
-
 ```
+
 Input: (batch_size, 10 timesteps, 7 PMU features)
 ↓
 Linear projection → d_model=64
@@ -79,7 +68,6 @@ Global Average Pooling
 ↓
 Classification Head → 6 fault type probabilities
 
-```
 **Total parameters:** 72,006
 
 **PMU features used:**
@@ -89,19 +77,61 @@ Classification Head → 6 fault type probabilities
 
 ---
 
+---
+```
+## Results Summary
+
+| Dataset        | Accuracy |
+|----------------|----------|
+| Synthetic data | 100.00%  |
+| Real PMU data  | 99.96%   |
+
+---
+
+## Results
+
+### Voltage Distribution by Fault Type
+![Voltage Distribution](results/voltage_distribution.png)
+
+### Current Distribution by Fault Type
+![Current Distribution](results/current_distribution.png)
+
+### Feature Boxplots
+![Feature Boxplots](results/feature_boxplots.png)
+
+### Voltage vs Current by Fault Type
+![Voltage vs Current](results/voltage_vs_current.png)
+
+### Training Curves and Confusion Matrix
+![Final Evaluation](results/final_evaluation.png)
+
+### Synthetic vs Real Data Performance
+![Synthetic vs Real](results/synthetic_vs_real.png)
+
+### SHAP Feature Importance — Overall
+![SHAP Bar](results/shap_bar.png)
+
+### SHAP Feature Importance — Heatmap
+![SHAP Heatmap](results/shap_heatmap.png)
+
+### SHAP Feature Importance — Per Fault Type
+![SHAP Per Class](results/shap_per_class.png)
+
+---
+
 ## SHAP Explainability Findings
 
 SHAP (SHapley Additive exPlanations) analysis identifies which PMU channels
 drive each fault classification decision.
 
 **Key findings:**
-- **Va (Voltage Phase A)** is the most influential feature overall — top contributor
+- **Va (Voltage Phase A)** is the most influential feature overall - top contributor
   for LG, LL, and Normal classification
 - **Fi (Frequency)** appears in the top 3 for LG, LL, LLG, LLLG, and Normal,
   confirming that frequency deviation is a reliable fault indicator
 - **Current channels (Ia, Ib, Ic)** become more important for multi-phase faults
   (LLG, LLL, LLLG) where voltage signatures alone are insufficient
-- **Vc (Voltage Phase C)** is the top contributor for LLLG — the most severe fault type
+- **Vc (Voltage Phase C)** is the top contributor for LLLG - the most severe fault type
 
 This per-class explainability is directly useful for grid operators who need to
 understand which sensors triggered a fault alarm.
@@ -109,7 +139,6 @@ understand which sensors triggered a fault alarm.
 ---
 
 ## Project Structure
-
 ```
 pmu-fault-detection/
 ├── data/
@@ -174,13 +203,4 @@ Time-Series Classification · Power Systems · PMU Data
   edge cases.
 - Future work includes online/streaming inference for true real-time deployment
   and testing under noisy or missing measurement conditions.
-
----
-
-## Relevance to Smart Grid AI Research
-
-This project addresses the **monitoring** dimension of smart grid AI —
-complementing control-focused work such as deep reinforcement learning
-for microgrid energy management. Together they cover two of the three
-core pillars of AI-enabled power systems: control, monitoring, and optimization.
 
